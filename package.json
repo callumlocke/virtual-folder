@@ -11,7 +11,8 @@
     "buffer-equal": "0.0.1",
     "filewalker": "^0.1.2",
     "graceful-fs": "^3.0.6",
-    "sane": "^1.0.2"
+    "sane": "^1.0.2",
+    "which": "^1.0.9"
   },
   "devDependencies": {
     "async": "^0.9.0",
@@ -36,8 +37,8 @@
     "url": "git://github.com/callumlocke/virtual-folder"
   },
   "scripts": {
-    "clean": "rimraf lib",
     "build": "babel --source-maps --out-dir lib src",
+    "clean": "rimraf lib",
     "develop": "nodemon --exec 'npm run prepublish && npm test' --watch src --watch test --ext coffee,js",
     "prepublish": "npm run clean && npm run build",
     "test": "coffee ./test/acceptance.coffee"

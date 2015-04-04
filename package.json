@@ -1,7 +1,7 @@
 {
   "name": "virtual-folder",
   "description": "Create an in-memory virtual folder, optionally sync'd with a real folder on disk",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Callum Locke",
   "bugs": {
     "url": "https://github.com/callumlocke/virtual-folder/issues"

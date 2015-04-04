@@ -10,7 +10,9 @@
     "bluebird": "^2.9.24",
     "buffer-equal": "0.0.1",
     "filewalker": "^0.1.2",
-    "graceful-fs": "^3.0.6"
+    "graceful-fs": "^3.0.6",
+    "sane": "^1.0.2",
+    "which": "^1.0.9"
   },
   "devDependencies": {
     "async": "^0.9.0",
@@ -20,8 +22,7 @@
     "rimraf": "^2.3.2",
     "sinon": "^1.14.1",
     "source-map-support": "^0.2.10",
-    "tap-spec": "^3.0.0",
-    "tape": "^3.5.0",
+    "tape": "^4.0.0",
     "wrench": "^1.5.8"
   },
   "files": [
@@ -38,8 +39,8 @@
   "scripts": {
     "build": "babel --source-maps --out-dir lib src",
     "clean": "rimraf lib",
-    "develop": "nodemon --exec 'npm test' --watch src --watch test --ext coffee,js",
+    "develop": "nodemon --exec 'npm run prepublish && npm test' --watch src --watch test --ext coffee,js",
     "prepublish": "npm run clean && npm run build",
-    "test": "npm run clean && npm run build && coffee ./test/acceptance.coffee | tap-spec"
+    "test": "coffee ./test/acceptance.coffee"
   }
 }

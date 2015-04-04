@@ -3,11 +3,11 @@
 import 'babel/polyfill';
 import fs from 'graceful-fs';
 import path from 'path';
-import {EventEmitter} from 'events';
-import {exec} from 'child_process';
+import which from 'which';
 import Promise from 'bluebird';
 import bufferEqual from 'buffer-equal';
-import ChangeDetail from './change-detail';
+import ChangeInfo from './change-info';
+import {EventEmitter} from 'events';
 
 const readFile = Promise.promisify(fs.readFile);
 const unlink = Promise.promisify(fs.unlink);
@@ -16,11 +16,13 @@ const writeFile = Promise.promisify(fs.writeFile);
 const resolvedNull = Promise.resolve(null);
 
 const defaults = {
-  syncMode: 'push',
+  syncMode: 'push', // only applicable if user sets a syncDir
   watchMode: 'auto'
 };
 
+
 export default class VirtualFolder extends EventEmitter {
+
   /**
    * Create a new virtual folder.
    * 
@@ -121,6 +123,9 @@ export default class VirtualFolder extends EventEmitter {
           });
 
           decidedOnWatchman.then(function (useWatchman) {
+            // note to assist with debugging
+            folder._usingWatchman = useWatchman;
+
             // create the sane watcher
             folder._watcher = sane(folder.syncDir, {
               watchman: useWatchman,
@@ -174,32 +179,50 @@ export default class VirtualFolder extends EventEmitter {
             // handle events from the sane watcher
             ['change', 'add', 'delete'].forEach(function (type) {
               folder._watcher.on(type, function (relPath, root, stat) {
-                console.log('fs event!', type, relPath);
-
                 if (stat == null) {
-                  // this is a deletion?
-                  throw new Error('todo');
-                }
-                else if (stat.isFile()) {
-                  console.assert(type === 'change' || type === 'add', 'unexpected type: ' + type);
-
-                  const absPath = path.resolve(this.syncDir, relPath);
-
+                  // the file on disk was deleted.
+                  console.assert(type === 'delete', `unexpected type: ${type}`);
+                  
+                  // see if the file exists in the virtual folder (might not if it was a very quick create-and-delete)
                   const gotOldContents = folder._fileContentsPromises[relPath] || resolvedNull;
 
-                  const gotNewContents = readFile(absPath);
+                  gotOldContents.then(function (oldContents) {
+                    if (oldContents != null) {
+                      // delete the copy from the virtual folder
+                      delete folder._fileContentsPromises[relPath];
 
+                      // emit a change event
+                      folder.emit('change', new ChangeInfo({
+                        path: relPath,
+                        type: 'deleted',
+                        contents: null,
+                        oldContents: oldContents
+                      }));
+                    }
+                  });
+                }
+
+                else if (stat.isFile()) {
+                  // the file on disk has been modified or created.
+                  console.assert(type === 'change' || type === 'add', `unexpected type: ${type}`);
+
+                  // get the new contents from disk, and the old contents from the virtual file
+                  const absPath = path.resolve(folder.syncDir, relPath);
+                  const gotNewContents = readFile(absPath);
+                  const gotOldContents = folder._fileContentsPromises[relPath] || resolvedNull;
+
+                  // update the central promise for this file immediately
+                  folder._fileContentsPromises[relPath] = gotNewContents;
+
+                  // if anything actually changed, emit a change event
                   Promise.all([gotOldContents, gotNewContents]).then(function ([oldContents, newContents]) {
                     if (!bufferEqual(newContents, oldContents)) {
-                      // the contents have changed.
-                      folder._fileContentsPromises[relPath] = gotNewContents;
-
-                      folder.emit('change', {
+                      folder.emit('change', new ChangeInfo({
                         path: relPath,
                         type: (oldContents ? 'modified' : 'created'),
                         contents: newContents,
                         oldContents: oldContents
-                      });
+                      }));
                     }
                   });
                 }
@@ -211,7 +234,7 @@ export default class VirtualFolder extends EventEmitter {
         }
         else {
           // this must be in 'push' mode.
-          loadAllFileContents().then(resolve, reject);
+          resolve(loadAllFileContents());
         }
       });
 
@@ -227,7 +250,7 @@ export default class VirtualFolder extends EventEmitter {
     }
 
     // Return the single _ready promise
-    return this._ready;
+    return folder._ready;
   }
 
   /**
@@ -263,7 +286,7 @@ export default class VirtualFolder extends EventEmitter {
         // get the old contents
         (folder._fileContentsPromises[filename] || resolvedNull).then(function (oldContents) {
           let persistedChange;
-          let changeDetail = null;
+          let changeInfo;
 
           if (contents === null && oldContents !== null) {
             // the old file existed, and this .set() call deletes it.
@@ -277,12 +300,12 @@ export default class VirtualFolder extends EventEmitter {
               // TODO: delete dir if it's the last thing in there!
             }
 
-            changeDetail = {
+            changeInfo = new ChangeInfo({
               type: 'deleted',
               path: filename,
               contents: contents,
               oldContents: oldContents
-            };
+            });
           }
 
           else if (Buffer.isBuffer(contents) && !bufferEqual(contents, oldContents)) {
@@ -296,20 +319,20 @@ export default class VirtualFolder extends EventEmitter {
               persistedChange = writeFile(path.resolve(folder.syncDir, filename), contents);
             }
 
-            changeDetail = {
+            changeInfo = new ChangeInfo({
               type: (oldContents ? 'modified' : 'created'),
               path: filename,
               contents: contents,
               oldContents: oldContents
-            };
+            });
           }
 
           // resolve as appropriate
-          if (changeDetail != null) {
+          if (changeInfo) {
             // contents changed - wait to persist to disk (if applic.) then emit & resolve
             (persistedChange || Promise.resolve()).then(function () {
-              folder.emit('change', changeDetail);
-              resolve(changeDetail);
+              folder.emit('change', changeInfo);
+              resolve(changeInfo);
             });
           }
           else {
@@ -362,28 +385,45 @@ export default class VirtualFolder extends EventEmitter {
 
 
   /**
+  * Closes any filesystem watchers so the process can exit.
+  *
+  * @method
+  */
+  stop() {
+    if (this._watcher) this._watcher.close();
+  }
+
+
+  /**
   * Returns a promise that fulfills with `true` or `false` indicating whether
   * the system has "watchman" installed on on the system PATH.
   *
   * @function
   */
   static _systemHasWatchman() {
-    // memoise the result
+    // do this check only once and remember the result
     if (!VirtualFolder.__systemHasWatchman) {
-      if (process.platform === 'darwin' || process.platform === 'linux') {
-        VirtualFolder.__systemHasWatchman = new Promise(function (resolve) {
-          exec('which watchman', function (err, stdout) {
-            if (err || !(stdout && stdout.length > 1)) resolve(false);
-            else resolve(true); // watchman found!
+      switch (process.platform) {
+        case 'darwin':
+        case 'linux':
+        case 'freebsd':
+          // check if watchman is on path
+          VirtualFolder.__systemHasWatchman = new Promise(function (resolve) {
+            which('watchman', function (err) {
+              if (err) resolve(false);
+              else resolve(true);
+            });
           });
-        });
-      }
-      else {
-        // not osx or linux; assume no watchman
-        VirtualFolder.__systemHasWatchman = Promise.resolve(false);
+          break;
+
+        default:
+          // assume no watchman
+          VirtualFolder.__systemHasWatchman = Promise.resolve(false);
       }
     }
 
     return VirtualFolder.__systemHasWatchman;
   }
 }
+
+VirtualFolder.ChangeInfo = ChangeInfo;

@@ -6,6 +6,14 @@ import {EventEmitter} from 'events';
 
 const FILES = Symbol();
 
+let equal;
+if (Buffer.prototype.equals) {
+  equal = (a, b) => a.equals(b);
+}
+else {
+  equal = require('buffer-equal');
+}
+
 export default class VirtualFolder extends EventEmitter {
   constructor() {
     super();
@@ -31,7 +39,7 @@ export default class VirtualFolder extends EventEmitter {
     let type;
     if (oldContents) {
       if (contents) {
-        if (!oldContents.equals(contents)) type = 'modify';
+        if (!equal(oldContents, contents)) type = 'modify';
       }
       else type = 'delete';
     }

@@ -17,6 +17,7 @@
   "devDependencies": {
     "babel": "^5.1.13",
     "babel-eslint": "^3.0.1",
+    "bluebird": "^2.9.25",
     "chalk": "^1.0.0",
     "clear-trace": "0.0.3",
     "eslint": "^0.20.0",

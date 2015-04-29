@@ -1,0 +1,27 @@
+{
+  "defaults": {
+    "loose": true,
+    "optional": [
+      "es7.classProperties"
+    ]
+  },
+  "builds": [
+    {
+      "version": "4.1.0.27",
+      "options": {
+        "blacklist": [
+          "es6.forOf",
+          "es6.templateLiterals",
+          "es6.constants"
+        ]
+      }
+    },
+    {
+      "options": {
+        "optional": [
+          "runtime"
+        ]
+      }
+    }
+  ]
+}

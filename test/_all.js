@@ -30,7 +30,7 @@ const handleError = function (err) {
 const exit = function (code) {
   if (numErrors) {
     console.log('\n' + chalk.red('✘'), numErrors, 'error' + (numErrors > 1 ? 's' : '') + '.\n\n');
-    // process.exit(1); // eslint-disable-line
+    process.exit(1); // eslint-disable-line
   }
   else {
     console.log('\n' + chalk.green('✔'), 'No errors.\n\n');

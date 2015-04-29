@@ -18,7 +18,7 @@
     "babel": "^5.1.13",
     "babel-eslint": "^3.0.1",
     "chalk": "^1.0.0",
-    "clear-trace": "*",
+    "clear-trace": "0.0.3",
     "eslint": "^0.20.0",
     "glob": "^5.0.5",
     "multiform-build": "0.0.1-alpha",

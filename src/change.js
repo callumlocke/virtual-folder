@@ -10,6 +10,10 @@ export default class Change {
     this.type = type;
   }
 
+
+  /**
+   * Makes change objects appear nicely in console.logs.
+   */
   inspect() {
     let amount;
     switch(this.type) {
@@ -26,11 +30,16 @@ export default class Change {
     return `<CHANGE: ${this.type} ${this.filename} (${amount})>`;
   }
 
+
+  /**
+   * Get a string saying how much the file has changed in size.
+   */
   get sizeDifference() {
-    const value = (
+    const difference = (
       (this.contents ? this.contents.length : 0) -
       (this.oldContents ? this.oldContents.length : 0)
     );
-    return value >= 0 ? `+${prettyBytes(value)}` : prettyBytes(value);
+
+    return difference >= 0 ? `+${prettyBytes(difference)}` : prettyBytes(difference);
   }
 }

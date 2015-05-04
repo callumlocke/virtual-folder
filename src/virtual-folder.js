@@ -2,17 +2,11 @@
 
 import isString from 'lodash/lang/isString';
 import Change from './change';
+import bufferEqual from 'buffer-equal';
 import {EventEmitter} from 'events';
 
 const FILES = Symbol();
 
-let equal;
-if (Buffer.prototype.equals) {
-  equal = (a, b) => a.equals(b);
-}
-else {
-  equal = require('buffer-equal');
-}
 
 export default class VirtualFolder extends EventEmitter {
   constructor() {

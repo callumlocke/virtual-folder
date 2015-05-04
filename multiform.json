@@ -7,6 +7,7 @@
   },
   "builds": [
     {
+      "dir": "lib",
       "version": "4.1.0.27",
       "options": {
         "blacklist": [
@@ -17,6 +18,7 @@
       }
     },
     {
+      "dir": "lib-es5",
       "options": {
         "optional": [
           "runtime"

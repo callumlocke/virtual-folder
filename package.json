@@ -11,7 +11,7 @@
     "buffer-equal": "0.0.1",
     "in-place": "^1.0.0",
     "lodash": "^3.8.0",
-    "multiform": "0.0.1-alpha",
+    "multiform": "^0.0.1-alpha.2",
     "pretty-bytes": "^1.0.4"
   },
   "devDependencies": {

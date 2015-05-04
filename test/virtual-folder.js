@@ -25,7 +25,7 @@ export default async function virtualFolderTest() {
   c = folder.write('bar.txt', null);
   assert(c === null);
 
-  c = folder.write('bar.txt', Buffer('barrr'));
+  c = folder.write('bar.txt', new Buffer('barrr'));
   console.log(c);
   assert(c.type === 'add');
   assert(c.oldContents === null);

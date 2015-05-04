@@ -7,15 +7,15 @@
     "url": "https://github.com/callumlocke/virtual-folder/issues"
   },
   "dependencies": {
-    "babel-runtime": "^5.1.13",
+    "babel-runtime": "^5.2.9",
     "buffer-equal": "0.0.1",
     "in-place": "^1.0.0",
-    "lodash": "^3.7.0",
+    "lodash": "^3.8.0",
     "multiform": "0.0.1-alpha",
     "pretty-bytes": "^1.0.4"
   },
   "devDependencies": {
-    "babel": "^5.1.13",
+    "babel": "^5.2.9",
     "babel-eslint": "^3.0.1",
     "bluebird": "^2.9.25",
     "chalk": "^1.0.0",

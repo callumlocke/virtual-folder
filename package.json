@@ -28,8 +28,8 @@
   },
   "files": [
     "src",
-    "lib-0",
-    "lib-1",
+    "lib",
+    "lib-es5",
     "index.js",
     "multiform.json"
   ],

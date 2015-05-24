@@ -18,30 +18,30 @@ export default class VirtualFolder extends EventEmitter {
   /**
    * Gets the contents of a file.
    */
-  read(filename) {
-    return this[FILES][filename] || null;
+  read(path) {
+    return this[FILES][path] || null;
   }
 
 
   /**
    * Sets the contents of a file.
    */
-  write(filename, contents) {
+  write(path, contents) {
     const folder = this;
 
     // validate input
-    if (!isString(filename)) throw new TypeError('Expected filename to be a string; got: ' + typeof filename);
+    if (!isString(path)) throw new TypeError('Expected path to be a string; got: ' + typeof path);
     if (isString(contents)) contents = new Buffer(contents);
     else if (contents !== null && !Buffer.isBuffer(contents)) {
       throw new TypeError('Exected contents to be a buffer, string or null; got: ' + typeof contents);
     }
 
     // check what the old contents was before updating it
-    const oldContents = folder.read(filename);
+    const oldContents = folder.read(path);
 
     // update our record of this file's contents
-    if (contents) folder[FILES][filename] = contents;
-    else delete folder[FILES][filename];
+    if (contents) folder[FILES][path] = contents;
+    else delete folder[FILES][path];
 
     // decide change type, if any
     let type;
@@ -55,7 +55,7 @@ export default class VirtualFolder extends EventEmitter {
 
     // respond with a change object, if it changed
     if (type) {
-      const change = new Change({filename, contents, oldContents, type});
+      const change = new Change({path, contents, oldContents, type});
       folder.emit('change', change);
       return change;
     }
@@ -64,7 +64,7 @@ export default class VirtualFolder extends EventEmitter {
   }
 
 
-  getAllFilenames() {
+  getAllPaths() {
     return Object.keys(this[FILES]);
   }
 }

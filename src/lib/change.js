@@ -3,8 +3,8 @@
 import prettyBytes from 'pretty-bytes';
 
 export default class Change {
-  constructor({filename, contents, oldContents, type}) {
-    this.filename = filename;
+  constructor({path, contents, oldContents, type}) {
+    this.path = path;
     this.contents = contents;
     this.oldContents = oldContents;
     this.type = type;
@@ -27,7 +27,7 @@ export default class Change {
         amount = `${prettyBytes(this.oldContents.length)} => ${prettyBytes(this.contents.length)}`;
     }
 
-    return `<CHANGE: ${this.type} ${this.filename} (${amount})>`;
+    return `<CHANGE: ${this.type} ${this.path} (${amount})>`;
   }
 
 

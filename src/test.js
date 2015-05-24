@@ -39,9 +39,9 @@ c = folder.write('foo.txt', null);
 assert(c === null);
 
 c = folder.write('another.txt', 'extra file');
-console.log('folder.getAllFilenames()', folder.getAllFilenames());
+console.log('folder.getAllPaths()', folder.getAllPaths());
 assert.deepEqual(
-  folder.getAllFilenames(),
+  folder.getAllPaths(),
   ['bar.txt', 'another.txt'],
-  'should be able to get all filenames'
+  'should be able to get all paths'
 );

@@ -1,6 +1,6 @@
 'use strict';
 
-import isString from 'lodash/lang/isString';
+import isString from 'lodash.isString';
 import bufferEqual from 'buffer-equal';
 import {EventEmitter} from 'events';
 import Change from './change';

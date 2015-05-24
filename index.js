@@ -1,1 +1,1 @@
-module.exports = require('multiform').load('virtual-folder');
+module.exports = require('multiform').load('lib');

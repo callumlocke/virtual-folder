@@ -1,9 +1,9 @@
 'use strict';
 
 import isString from 'lodash/lang/isString';
-import Change from './change';
 import bufferEqual from 'buffer-equal';
 import {EventEmitter} from 'events';
+import Change from './change';
 
 const FILES = Symbol();
 
@@ -68,7 +68,3 @@ export default class VirtualFolder extends EventEmitter {
     return Object.keys(this[FILES]);
   }
 }
-
-
-// expose the Change class for test purposes
-VirtualFolder.Change = Change;

@@ -1,9 +1,7 @@
 {
   "defaults": {
     "loose": true,
-    "optional": [
-      "es7.classProperties"
-    ]
+    "stage": 0
   },
   "builds": [
     {

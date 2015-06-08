@@ -1,5 +1,5 @@
 import sourceMapSupport from 'source-map-support';
-import VirtualFolder from './lib';
+import {VirtualFolder} from './lib';
 import Change from './lib/change';
 import assert from 'assert';
 

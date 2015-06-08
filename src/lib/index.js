@@ -1,5 +1,3 @@
-'use strict';
-
 import isString from 'lodash.isString';
 import bufferEqual from 'buffer-equal';
 import {EventEmitter} from 'events';
@@ -8,7 +6,7 @@ import Change from './change';
 const FILES = Symbol();
 
 
-export default class VirtualFolder extends EventEmitter {
+export class VirtualFolder extends EventEmitter {
   constructor() {
     super();
     this[FILES] = {};
@@ -27,8 +25,6 @@ export default class VirtualFolder extends EventEmitter {
    * Sets the contents of a file.
    */
   write(path, contents) {
-    const folder = this;
-
     // validate input
     if (!isString(path)) throw new TypeError('Expected path to be a string; got: ' + typeof path);
     if (isString(contents)) contents = new Buffer(contents);
@@ -37,11 +33,11 @@ export default class VirtualFolder extends EventEmitter {
     }
 
     // check what the old contents was before updating it
-    const oldContents = folder.read(path);
+    const oldContents = this.read(path);
 
     // update our record of this file's contents
-    if (contents) folder[FILES][path] = contents;
-    else delete folder[FILES][path];
+    if (contents) this[FILES][path] = contents;
+    else delete this[FILES][path];
 
     // decide change type, if any
     let type;
@@ -56,7 +52,7 @@ export default class VirtualFolder extends EventEmitter {
     // respond with a change object, if it changed
     if (type) {
       const change = new Change({path, contents, oldContents, type});
-      folder.emit('change', change);
+      this.emit('change', change);
       return change;
     }
 
@@ -68,3 +64,6 @@ export default class VirtualFolder extends EventEmitter {
     return Object.keys(this[FILES]);
   }
 }
+
+
+export Change from './change';

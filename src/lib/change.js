@@ -1,6 +1,5 @@
-'use strict';
-
 import prettyBytes from 'pretty-bytes';
+
 
 export default class Change {
   constructor({path, contents, oldContents, type}) {

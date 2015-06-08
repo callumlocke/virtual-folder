@@ -1,1 +1,3 @@
 dist-*/**/*.js
+index.js
+test.js

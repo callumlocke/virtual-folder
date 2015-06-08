@@ -1,4 +1,4 @@
-import isString from 'lodash.isString';
+import isString from 'lodash.isstring';
 import bufferEqual from 'buffer-equal';
 import {EventEmitter} from 'events';
 import Change from './change';

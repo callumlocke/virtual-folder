@@ -39,8 +39,7 @@
   },
   "scripts": {
     "prepublish": "eslint . && multiform",
-    "pretest": "multiform",
-    "test": "node test",
+    "test": "multiform && node test",
     "watch": "nodemon --exec 'npm test' --watch src --watch test --watch index.js --watch package.json"
   }
 }

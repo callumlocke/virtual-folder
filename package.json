@@ -39,7 +39,7 @@
   },
   "scripts": {
     "prepublish": "multiform && npm run verify",
-    "test": "multiform && node test && npm run verify",
+    "test": "multiform && npm run verify && node test",
     "verify": "node verify-build.js",
     "watch": "nodemon --exec 'npm test' --watch src --watch test --watch index.js --watch package.json"
   }

@@ -1,3 +1,4 @@
 dist-*/**/*.js
 index.js
 test.js
+verify-build.js

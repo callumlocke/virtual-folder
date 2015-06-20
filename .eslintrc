@@ -7,7 +7,7 @@ env:
 rules:
   comma-dangle: [2, 'always-multiline']
   curly: [2, 'multi-line']
-  no-lone-blocks: false
+  no-lone-blocks: 0
   quotes: [2, 'single']
   semi: 2
   no-var: 2

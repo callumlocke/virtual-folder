@@ -1,1 +1,1 @@
-module.exports = require('multiform').load('test.js');
+module.exports = require('multiform').load('test');

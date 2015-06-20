@@ -1,7 +1,7 @@
 {
   "name": "virtual-folder",
   "description": "In-memory holding place for temp files in a build pipeline.",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": "Callum Locke",
   "bugs": {
     "url": "https://github.com/callumlocke/virtual-folder/issues"

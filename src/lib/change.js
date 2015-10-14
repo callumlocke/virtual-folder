@@ -1,14 +1,12 @@
 import prettyBytes from 'pretty-bytes';
 
-
 export default class Change {
-  constructor({path, contents, oldContents, type}) {
-    this.path = path;
+  constructor({file, contents, oldContents, type}) {
+    this.file = file;
     this.contents = contents;
     this.oldContents = oldContents;
     this.type = type;
   }
-
 
   /**
    * Makes change objects appear nicely in console.logs.
@@ -26,12 +24,11 @@ export default class Change {
         amount = `${prettyBytes(this.oldContents.length)} => ${prettyBytes(this.contents.length)}`;
     }
 
-    return `<CHANGE: ${this.type} ${this.path} (${amount})>`;
+    return `<CHANGE: ${this.type} ${this.file} (${amount})>`;
   }
 
-
   /**
-   * Get a string saying how much the file has changed in size.
+   * Get a string saying how much the contents have changed in size.
    */
   get sizeDifference() {
     const difference = (

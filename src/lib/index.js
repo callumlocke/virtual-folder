@@ -5,39 +5,36 @@ import Change from './change';
 
 const FILES = Symbol();
 
-
 export class VirtualFolder extends EventEmitter {
   constructor() {
     super();
     this[FILES] = {};
   }
 
-
   /**
    * Gets the contents of a file.
    */
-  read(path) {
-    return this[FILES][path] || null;
+  read(file) {
+    return this[FILES][file] || null;
   }
-
 
   /**
    * Sets the contents of a file.
    */
-  write(path, contents) {
+  write(file, contents) {
     // validate input
-    if (!isString(path)) throw new TypeError('Expected path to be a string; got: ' + typeof path);
+    if (!isString(file)) throw new TypeError('Expected file to be a string; got: ' + typeof file);
     if (isString(contents)) contents = new Buffer(contents);
     else if (contents !== null && !Buffer.isBuffer(contents)) {
       throw new TypeError('Exected contents to be a buffer, string or null; got: ' + typeof contents);
     }
 
     // check what the old contents was before updating it
-    const oldContents = this.read(path);
+    const oldContents = this.read(file);
 
     // update our record of this file's contents
-    if (contents) this[FILES][path] = contents;
-    else delete this[FILES][path];
+    if (contents) this[FILES][file] = contents;
+    else delete this[FILES][file];
 
     // decide change type, if any
     let type;
@@ -51,7 +48,7 @@ export class VirtualFolder extends EventEmitter {
 
     // respond with a change object, if it changed
     if (type) {
-      const change = new Change({path, contents, oldContents, type});
+      const change = new Change({file, contents, oldContents, type});
       this.emit('change', change);
       return change;
     }
@@ -59,7 +56,9 @@ export class VirtualFolder extends EventEmitter {
     return null;
   }
 
-
+  /**
+   * Returns an array of all the file paths currently in the virtual folder.
+   */
   getAllPaths() {
     return Object.keys(this[FILES]);
   }

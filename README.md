@@ -2,15 +2,17 @@
 
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
-A class for an in-memory 'folder' – a place to put buffers with associated paths. Does not care whether the file paths actually exist anywhere on disk.
+A class for an in-memory 'folder' – a place to store buffers with associated file paths. Does not care whether the files actually exist anywhere on disk.
 
-You could just use a plain JavaScript object for the same purpose, but this class add events and some sugar.
+You could just use a plain JavaScript object for the same purpose, but this class adds events and some sugar.
+
 
 ## Install
 
 ```
 $ npm install virtual-folder
 ```
+
 
 ## Usage
 
@@ -22,25 +24,25 @@ folder.write('some/file.txt', 'hello'); // returns Change object (see below)
 folder.read('some/file.txt'); // returns Buffer('hello');
 ```
 
+
 ### Methods
 
-#### `.write(path, contents)`
+##### .write(file, contents)
 
 - `contents` can be a buffer, a string (which will be converted to a buffer), or `null` (meaning 'delete').
 - If the call results in a change, the folder will emit a `'change'` event with a `Change` object (see below). The `.write()` call will also return the `Change` object.
 - If the call results in no change, it returns `null`.
 
-#### `.read(path)`
+##### .read(file)
 
-- Returns the contents of `path`, or `null` if that file doesn't exist.
+- Returns the contents for `file`, or `null` if the file doesn't exist.
 
-### `Change` objects
 
-A change is emitted whenever a file's contents are changed by a `.write()` call. (The same change object is also returned from the `.write()` call.)
+### Change objects
 
 Properties:
 
-- `path` – string
+- `file` – string
 - `type` - string (either `"add"`, `"modify"` or `"delete"`)
 - `contents` – buffer (or `null` if this change is a "delete")
 - `oldContents` – buffer (or `null` if this change is an "add")

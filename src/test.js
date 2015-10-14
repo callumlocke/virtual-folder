@@ -5,7 +5,6 @@ import assert from 'assert';
 
 sourceMapSupport.install();
 
-
 const folder = new VirtualFolder();
 
 let c = folder.write('foo.txt', 'hello');

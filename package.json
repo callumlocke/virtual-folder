@@ -3,11 +3,8 @@
   "description": "In-memory holding place for temp files in a build pipeline.",
   "version": "0.5.2",
   "author": "Callum Locke",
-  "bugs": {
-    "url": "https://github.com/callumlocke/virtual-folder/issues"
-  },
   "dependencies": {
-    "babel-runtime": "^5.5.8",
+    "babel-runtime": "^5.8.25",
     "buffer-equal": "^0.0.1",
     "in-place": "^1.1.0",
     "lodash.isstring": "^3.0.1",
@@ -15,13 +12,13 @@
     "pretty-bytes": "^2.0.1"
   },
   "devDependencies": {
-    "babel": "^5.5.8",
-    "babel-eslint": "^3.1.17",
-    "eslint": "^0.23.0",
-    "glob": "^5.0.10",
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.3",
+    "eslint": "^1.6.0",
+    "glob": "^5.0.15",
     "multiform-build": "^0.2.0",
-    "nodemon": "^1.3.7",
-    "source-map-support": "^0.3.1"
+    "nodemon": "^1.7.1",
+    "source-map-support": "^0.3.2"
   },
   "files": [
     "src",
@@ -30,13 +27,9 @@
     "index.js",
     "multiform.json"
   ],
-  "homepage": "https://github.com/callumlocke/virtual-folder",
   "license": "MIT",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/callumlocke/virtual-folder"
-  },
+  "repository": "callumlocke/virtual-folder",
   "scripts": {
     "prepublish": "eslint . && multiform",
     "pretest": "multiform",

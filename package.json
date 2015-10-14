@@ -1,7 +1,7 @@
 {
   "name": "virtual-folder",
   "description": "In-memory holding place for temp files in a build pipeline.",
-  "version": "0.5.2",
+  "version": "1.0.0",
   "author": "Callum Locke",
   "dependencies": {
     "babel-runtime": "^5.8.25",
